@@ -2,7 +2,6 @@ package main
 
 import (
   "code.google.com/p/go-semver/version"
-  "encoding/base64"
   "encoding/json"
   "fmt"
   "github.com/gosexy/to"
@@ -10,11 +9,46 @@ import (
   "net/http"
   "os/exec"
   "runtime"
-  "strings"
 )
 
+// func CheckUpdate() (string, error) {
+//   resp, err := http.Get("https://api.github.com/repos/kdar/morphgen-binary/contents/version.txt")
+//   if err != nil {
+//     return "", err
+//   }
+
+//   data, err := ioutil.ReadAll(resp.Body)
+//   if err != nil {
+//     return "", err
+//   }
+//   resp.Body.Close()
+
+//   var datam map[string]interface{}
+//   err = json.Unmarshal(data, &datam)
+//   if err != nil {
+//     return "", err
+//   }
+
+//   b64version := strings.Trim(to.String(datam["content"]), "\n")
+//   versionData, err := base64.StdEncoding.DecodeString(b64version)
+//   if err != nil {
+//     return "", err
+//   }
+
+//   v, err := version.Parse(string(versionData))
+//   if err != nil {
+//     return "", err
+//   }
+
+//   if VERSION.Less(v) {
+//     return "Update available: " + v.String(), nil
+//   }
+
+//   return "", nil
+// }
+
 func CheckUpdate() (string, error) {
-  resp, err := http.Get("https://api.github.com/repos/kdar/morphgen-binary/contents/version.txt")
+  resp, err := http.Get("https://api.github.com/repos/kdar/morphgen-binary/tags")
   if err != nil {
     return "", err
   }
@@ -25,25 +59,21 @@ func CheckUpdate() (string, error) {
   }
   resp.Body.Close()
 
-  var datam map[string]interface{}
+  var datam []map[string]interface{}
   err = json.Unmarshal(data, &datam)
   if err != nil {
     return "", err
   }
 
-  b64version := strings.Trim(to.String(datam["content"]), "\n")
-  versionData, err := base64.StdEncoding.DecodeString(b64version)
-  if err != nil {
-    return "", err
-  }
+  if len(datam) > 0 {
+    v, err := version.Parse(to.String(datam[0]["name"]))
+    if err != nil {
+      return "", err
+    }
 
-  v, err := version.Parse(string(versionData))
-  if err != nil {
-    return "", err
-  }
-
-  if VERSION.Less(v) {
-    return "Update available: " + v.String(), nil
+    if VERSION.Less(v) {
+      return "Update available: " + v.String(), nil
+    }
   }
 
   return "", nil

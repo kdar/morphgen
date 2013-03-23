@@ -1,6 +1,8 @@
 MorphGEN
 =========
 
+Download the binary distribution here: http://github.com/kdar/morphgen-binary
+
 An application that helps in generating TMorph codes for WoW.
 
 *Note*: Only tested in Windows 7 x64.
