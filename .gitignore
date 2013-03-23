@@ -1,0 +1,6 @@
+/.doc
+/unused
+*.psd
+*.o
+*.syso
+/dist

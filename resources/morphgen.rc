@@ -1,0 +1,5 @@
+#include <windows.h>
+IDI_MAIN ICON "resources\\icon.ico"
+
+#define MANIFEST_RESOURCE_ID 1
+MANIFEST_RESOURCE_ID RT_MANIFEST "resources\\morphgen.manifest"
