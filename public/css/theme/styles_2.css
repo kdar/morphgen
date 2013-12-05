@@ -1,0 +1,31 @@
+/*fonts*/
+@import url("font-face.css");
+@import url("font-awesome.css");
+@import url("pictonic.css");
+@import url("icomoon.css");
+
+/*page sections*/
+@import url("base.css");
+
+/*components*/
+@import url("buttons.css");
+@import url("form.css");
+@import url("dropdowns.css");
+@import url("progress-bars.css");
+@import url("navbars.css");
+
+/*bootstrap extend*/
+@import url("../../plugins/progress-bar/bootstrap-progressbar.css");
+
+/*simple pie chart*/
+@import url(../../plugins/easy-pie-chart/jquery.easy-pie-chart.css);
+
+/*form plugins*/
+@import url(../../plugins/uniform/css/default.css);
+@import url(../../plugins/chosen/css/default.css);
+@import url(../../plugins/bootstrap-fileupload/bootstrap-fileupload.css);
+@import url(../../plugins/datepicker/css/datepicker.css);
+@import url(../../plugins/redactor/css/redactor.css);
+
+/*custom scrollbar plugins*/
+@import url(../../plugins/custom-scroll/css/jquery.mCustomScrollbar.css);

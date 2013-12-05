@@ -228,6 +228,7 @@ dlg.defaultenter = btn1
 timer = iup.timer{time=100}
 function timer:action_cb()
   for k, v in pairs(_G.callbacks) do
+    _G.callbacks[k] = nil 
     _G[k](unpack(luar.slice2table(v)))
   end
   _G.callbacks = {}

@@ -1,0 +1,88 @@
+body,html {
+	padding: 0px;
+	margin: 0;
+  height: 100%;
+}
+
+.container-fluid {
+  padding: 0;
+  height: 100%;
+  padding: 0 20px;
+}
+
+.form-horizontal .control-label {
+  float: left;
+  padding-top: 5px;
+  text-align: right;
+  width: 50px;
+}
+
+.form-horizontal .controls {
+  margin-left: 70px;
+  margin-right: 20px;
+}
+
+.form-horizontal .controls .input-append input[type="text"], .form-horizontal .controls .input-prepend input[type="text"] {
+  width: 70%;
+}
+
+.form-horizontal .progress, .form-horizontal .progress > div {
+  border-radius: 4px 4px 4px 4px;
+  transition: none;
+  -webkit-transition: none;
+  -moz-transition: none;
+  -ms-transition: none;
+  -o-transition: none;
+}
+
+select, textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"], .uneditable-input {
+  padding-left: 0.5%;
+  padding-right: 0.5%
+}
+
+#output {
+  width: 99%;
+  height: 150px;
+}
+
+
+.ui-pnotify.stack-bar-bottom {
+  margin-left: 15%;
+  right: 15%;
+  bottom: 10px;
+  top: auto;
+  left: auto;
+}
+
+
+.loadmask {
+    z-index: 100;
+    position: absolute;
+    top:0;
+    left:0;
+    -moz-opacity: 0.5;
+    opacity: .50;
+    filter: alpha(opacity=50);
+    background-color: #000;
+    width: 100%;
+    height: 100%;
+    zoom: 1;
+}
+
+.loadmask-msg {
+    z-index: 20001;
+    position: absolute;
+    top: 0;
+    left: 0;
+    line-height: 1; /* this enables us to center the label text relative to the spinner */
+}
+
+.masked {
+    overflow: hidden !important;
+}
+.masked-relative {
+    position: relative !important;
+}
+.masked-hidden {
+    visibility: hidden !important;
+}

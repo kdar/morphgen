@@ -9,7 +9,7 @@ An application that helps in generating TMorph codes for WoW.
 
 It supports the following websites:
   
-  + [http://www.wowhead.com/](http://www.wowhead.com/) - retreieve from item sets and item comparisons
+  + [http://www.wowhead.com/](http://www.wowhead.com/) - retrieve from item sets and item comparisons
   + [http://us.battle.net/wow/](http://us.battle.net/wow/) - retrieve from person's armory
   + [http://wowroleplaygear.com/](http://wowroleplaygear.com/) - transmog set
   + [http://mogmygear.com/](http://mogmygear.com/) - transmog set

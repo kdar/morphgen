@@ -121,7 +121,8 @@ func main() {
   // APPDIR = filepath.Dir(filename)
 
   if url == "" {
-    RunUI()
+    RunUI2()
+    // RunUI()
     return
   }
 
