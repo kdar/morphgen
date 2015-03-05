@@ -7,7 +7,6 @@ module("about", package.seeall)
 
 function show(version) 
   iup.Message("About MorphGEN", [[Made by Kevin and Cassandra Darlington
-Binary: http://github.com/kdar/morphgen-binary
 Site: http://outroot.com
 
 Version: ]] .. version)

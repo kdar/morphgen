@@ -11,7 +11,7 @@ var (
   VERSION = &version.Version{
     Major: 1,
     Minor: 0,
-    Patch: 2,
+    Patch: 3,
   }
 )
 
