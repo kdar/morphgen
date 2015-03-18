@@ -16,7 +16,7 @@ It supports the following websites:
   + [http://www.worldofwardrobes.net](http://www.worldofwardrobes.net) - transmog set
   + [http://www.wowmogging.com](http://www.wowmogging.com) - transmog set
 
-It also will support any website that has wowhead links to items in them. In the form of http://www.wowhead.com/item=[number]. So just try it out on a transmog site and see if it works. If it doesn't work then let me know at [issues](https://github.com/kdar/morphgen/issues).
+It also will support any website that has wowhead/wowdb links to items in them. So just try it out on a transmog site and see if it works. If it doesn't work then let me know at [issues](https://github.com/kdar/morphgen/issues).
 
 #### Usage
 
