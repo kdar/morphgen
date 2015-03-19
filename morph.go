@@ -16,6 +16,8 @@ import (
 var (
 	APPDIR string
 
+	generator *Generator
+
 	noTmog      = flag.Bool("notmog", false, "Toggle off grabbing transmogged items from armory")
 	versionFlag = flag.Bool("version", false, "Display version")
 
@@ -53,18 +55,37 @@ var (
 	}
 )
 
+const (
+	raidInherit = -1
+	raidNormal  = 0
+	raidHeroic  = 566
+	raidMythic  = 567
+)
+
 type TMorphItem struct {
-	Type string
-	Args []int
+	Type  string
+	Args  []int
+	Bonus int
 }
 
 func (t TMorphItem) String() string {
-	args := ""
+	var args []string
 	for _, i := range t.Args {
-		args = args + to.String(i) + " "
+		args = append(args, to.String(i))
 	}
 
-	return fmt.Sprintf(".%s %s", t.Type, strings.Trim(args, " "))
+	if t.Type == "item" {
+		switch t.Bonus {
+		case raidNormal:
+			args = append(args, "0")
+		case raidHeroic:
+			args = append(args, "1")
+		case raidMythic:
+			args = append(args, "3")
+		}
+	}
+
+	return fmt.Sprintf(".%s %s", t.Type, strings.Join(args, " "))
 }
 
 type TMorphItems []*TMorphItem
@@ -108,6 +129,8 @@ func canDisplayName(name string) bool {
 }
 
 func main() {
+	generator = &Generator{}
+
 	flag.Parse()
 
 	if *versionFlag {
@@ -126,16 +149,20 @@ func main() {
 		return
 	}
 
-	err := Generate(map[string]interface{}{"url": url}, os.Stdout)
+	err := generator.Generate(map[string]interface{}{"url": url}, os.Stdout)
 	if err != nil {
 		io.WriteString(os.Stdout, err.Error())
 	}
 }
 
+type Generator struct {
+	lastTmorphItems TMorphItems
+}
+
 // options:
 //  url - url to generate codes from
 //  notmog - turn off grabbing transmogged items from armory
-func Generate(options map[string]interface{}, w io.Writer) error {
+func (g *Generator) Generate(options map[string]interface{}, w io.Writer) error {
 	url := to.String(options["url"])
 	var tmorphItems TMorphItems
 	var err error
@@ -154,11 +181,28 @@ func Generate(options map[string]interface{}, w io.Writer) error {
 		return err
 	}
 
-	sort.Sort(tmorphItems)
-	for _, item := range tmorphItems {
+	g.lastTmorphItems = tmorphItems
+	bonus := int(to.Int64(options["bonus"]))
+	g.Bonus(bonus)
+	g.Output(w)
+
+	return nil
+}
+
+func (g *Generator) Bonus(bonus int) {
+	if bonus == raidInherit {
+		return
+	}
+
+	for i, _ := range g.lastTmorphItems {
+		g.lastTmorphItems[i].Bonus = bonus
+	}
+}
+
+func (g *Generator) Output(w io.Writer) {
+	sort.Sort(g.lastTmorphItems)
+	for _, item := range g.lastTmorphItems {
 		io.WriteString(w, item.String())
 		io.WriteString(w, "\n")
 	}
-
-	return nil
 }

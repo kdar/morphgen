@@ -3,7 +3,9 @@ _G.callbacks = _G.callbacks or {}
 require "iuplua"
 require "ui/about"
 
-module("ui", package.seeall)
+local inspect = require('ui/inspect')
+
+--module("ui", package.seeall)
 
 local cancelProgress
 local updateBar
@@ -28,6 +30,7 @@ function do_generate()
   generate({
     url=textUrl.value,
     notmog=optionTmog.value=="OFF",
+    bonustext=optionBonus[optionBonus.value]
   })
  
   return iup.DEFAULT
@@ -40,10 +43,35 @@ function do_download()
   end
 end
 
+function do_onBonusChange(self, text, item, state)
+  if state == 0 then 
+    return
+  end
+
+  onBonusChange({
+    text=text,
+    item=item
+  })
+
+  return iup.DEFAULT
+end
+
 -- Callbacks
 
 -- called when generate is done
 function _G.generate_callback(data, err)
+  if err ~= nil then    
+    show_error(err)
+  else
+    output.value = data
+    statusLabel.title = "Done."
+  end  
+  btn1.active = "YES"
+  progressBar.visible = "NO"  
+  cancelProgress = true
+end
+
+function _G.onBonusChange_callback(data, err)
   if err ~= nil then    
     show_error(err)
   else
@@ -172,10 +200,17 @@ output = iup.text{
 optionTmog = iup.toggle{
   title="Use transmogged items (armory only)", 
   value="ON", 
+  expand="HORIZONTAL",
   tip="If checked, it will use the character's transmogrified items on the armory.",
 }
+optionBonus = iup.list{
+  "Inherit"; "Normal"; "Heroic"; "Mythic";
+  value = 1,
+  dropdown="YES",
+  action=do_onBonusChange
+}
 optionsBox = iup.hbox{
-  optionTmog; 
+  optionTmog; optionBonus;
   gap=4; 
   margin="4x4"
 }

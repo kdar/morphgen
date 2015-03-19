@@ -1,18 +1,18 @@
 package main
 
 import (
-  "code.google.com/p/go-semver/version"
-  // "io/ioutil"
-  // "os"
-  // "path/filepath"
+	"code.google.com/p/go-semver/version"
+	// "io/ioutil"
+	// "os"
+	// "path/filepath"
 )
 
 var (
-  VERSION = &version.Version{
-    Major: 1,
-    Minor: 0,
-    Patch: 4,
-  }
+	VERSION = &version.Version{
+		Major: 1,
+		Minor: 1,
+		Patch: 0,
+	}
 )
 
 // type Version struct {
