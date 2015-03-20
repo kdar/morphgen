@@ -146,7 +146,10 @@ func wowapi(ids []string) (TMorphItems, error) {
 				doneChan <- true
 			}()
 
-			resp, err := http.Get("http://us.battle.net/api/wow/item/" + id)
+			contextUrl := ""
+
+		REDO:
+			resp, err := http.Get("http://us.battle.net/api/wow/item/" + id + contextUrl)
 			if err != nil {
 				errChan <- err
 				return
@@ -164,6 +167,14 @@ func wowapi(ids []string) (TMorphItems, error) {
 			if err != nil {
 				errChan <- err
 				return
+			}
+
+			if _, ok := datam["inventoryType"]; !ok {
+				if contexts, ok := datam["availableContexts"]; ok {
+					ctxs := contexts.([]interface{})
+					contextUrl = "/" + ctxs[0].(string)
+					goto REDO
+				}
 			}
 
 			slot := int(to.Int64(datam["inventoryType"]))
