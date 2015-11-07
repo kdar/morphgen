@@ -4,12 +4,13 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/gosexy/to"
 	"io/ioutil"
 	"net/http"
 	neturl "net/url"
-	// "path"
 	"strings"
+
+	"github.com/ansel1/merry"
+	"github.com/gosexy/to"
 )
 
 var (
@@ -28,7 +29,7 @@ var (
 func wowarmory(options map[string]interface{}) (TMorphItems, error) {
 	u, err := neturl.Parse(to.String(options["url"]))
 	if err != nil {
-		return nil, err
+		return nil, merry.Wrap(err)
 	}
 
 	parts := strings.Split(u.Path, "/")
@@ -44,17 +45,47 @@ func wowarmory(options map[string]interface{}) (TMorphItems, error) {
 		return nil, errors.New("Could not parse battle.net URL")
 	}
 
-	u.Path = fmt.Sprintf("/api/wow/character/%s/%s", parts[loc], parts[loc+1])
-	u.RawQuery = "fields=items,appearance"
+	hostParts := strings.Split(u.Host, ".")
+	if hostParts[0] == "cn" {
+	} else if len(hostParts) == 2 {
+		u.Host = "us.api." + strings.Join(hostParts, ".")
+	} else {
+		u.Host = hostParts[0] + ".api." + strings.Join(hostParts[1:], ".")
+	}
 
-	resp, err := http.Get(u.String())
-	if err != nil {
-		return nil, err
+	apikeys := []string{
+		"sehm98r8ss3fddjfs8rwxur435xjav94",
+		"trtrn4tdhzeruuypctm55a8m5td9z4ce",
+		"cc7qrdaxn9h47ds39nmgzb9hnutxfsrr",
+		"cbygdtw624xmfn2hr2sw3ayaeekg9cvy",
+		"7zsnd2q7npg5bch8hacae7t28xskn8vr",
+	}
+
+	if val, ok := options["apikey"]; ok {
+		apikeys = append([]string{to.String(val)}, apikeys...)
+	}
+
+	u.Scheme = "https"
+	u.Path = fmt.Sprintf("/wow/character/%s/%s", parts[loc], parts[loc+1])
+	rawQuery := "fields=items,appearance&locale=en_US&apikey="
+
+	var resp *http.Response
+	var apierr error
+	for _, apikey := range apikeys {
+		u.RawQuery = rawQuery + apikey
+		resp, apierr = http.Get(u.String())
+		if apierr == nil {
+			break
+		}
+	}
+
+	if apierr != nil {
+		return nil, merry.Wrap(err)
 	}
 
 	data, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return nil, err
+		return nil, merry.Wrap(err)
 	}
 	resp.Body.Close()
 
@@ -63,7 +94,7 @@ func wowarmory(options map[string]interface{}) (TMorphItems, error) {
 
 	err = json.Unmarshal(data, &datam)
 	if err != nil {
-		return nil, err
+		return nil, merry.Wrap(err)
 	}
 
 	// get all armor, weapons, and enchants
@@ -194,7 +225,7 @@ func wowapi(ids []string) (TMorphItems, error) {
 	for count < idslen {
 		select {
 		case err := <-errChan:
-			return nil, err
+			return nil, merry.Wrap(err)
 		case <-doneChan:
 			count++
 			if count >= idslen {
