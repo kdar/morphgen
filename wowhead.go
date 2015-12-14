@@ -109,6 +109,9 @@ func wowhead(options map[string]interface{}) (TMorphItems, error) {
 		o.Set("$", dollarObj)
 		g_spellsObj, _ := o.Object(`g_spells = {}`)
 		o.Set("g_spells", g_spellsObj)
+		o.Set("ts_PopulateScreenshotDiv", func(call otto.FunctionCall) otto.Value {
+		  return otto.UndefinedValue()
+		})
 
 		var tmorphItems TMorphItems
 		seenMainHand := false
