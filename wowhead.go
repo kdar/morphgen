@@ -7,13 +7,14 @@ package main
 import (
 	"bytes"
 	"errors"
-	"github.com/PuerkitoBio/goquery"
-	"github.com/gosexy/to"
-	"github.com/robertkrimen/otto"
 	"io/ioutil"
 	"net/http"
 	nurl "net/url"
 	"regexp"
+
+	"github.com/PuerkitoBio/goquery"
+	"github.com/gosexy/to"
+	"github.com/robertkrimen/otto"
 
 	"github.com/spf13/nitro"
 )
@@ -110,7 +111,7 @@ func wowhead(options map[string]interface{}) (TMorphItems, error) {
 		g_spellsObj, _ := o.Object(`g_spells = {}`)
 		o.Set("g_spells", g_spellsObj)
 		o.Set("ts_PopulateScreenshotDiv", func(call otto.FunctionCall) otto.Value {
-		  return otto.UndefinedValue()
+			return otto.UndefinedValue()
 		})
 
 		var tmorphItems TMorphItems
