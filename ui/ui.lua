@@ -32,7 +32,7 @@ function do_generate()
     notmog=optionTmog.value=="OFF",
     bonustext=optionBonus[optionBonus.value]
   })
- 
+
   return iup.DEFAULT
 end
 
@@ -44,7 +44,7 @@ function do_download()
 end
 
 function do_onBonusChange(self, text, item, state)
-  if state == 0 then 
+  if state == 0 then
     return
   end
 
@@ -60,26 +60,26 @@ end
 
 -- called when generate is done
 function _G.generate_callback(data, err)
-  if err ~= nil then    
+  if err ~= nil then
     show_error(err)
   else
     output.value = data
     statusLabel.title = "Done."
-  end  
+  end
   btn1.active = "YES"
-  progressBar.visible = "NO"  
+  progressBar.visible = "NO"
   cancelProgress = true
 end
 
 function _G.onBonusChange_callback(data, err)
-  if err ~= nil then    
+  if err ~= nil then
     show_error(err)
   else
     output.value = data
     statusLabel.title = "Done."
-  end  
+  end
   btn1.active = "YES"
-  progressBar.visible = "NO"  
+  progressBar.visible = "NO"
   cancelProgress = true
 end
 
@@ -107,8 +107,8 @@ function show_updatebar(text)
   }
 
   updateButton = iup.button{
-    title="Download", 
-    size="80x", 
+    title="Download",
+    size="80x",
     action=do_download,
     visible="YES",
   }
@@ -134,7 +134,7 @@ function show_error(err)
   output.value = err
   tags = iup.user { bulk = "Yes", cleanout = "Yes" }
   iup.Append(tags, iup.user { selectionpos = "0:1000", fgcolor = "255 0 0"})
-  output.addformattag = tags    
+  output.addformattag = tags
   statusLabel.title = "Error occurred."
 end
 
@@ -172,22 +172,22 @@ menu = create_menu(mmenu)
 -- Body
 
 btn1 = iup.button{
-  title="Generate", 
-  size="80x", 
+  title="Generate",
+  size="80x",
   action=do_generate
 }
 
 textUrl = iup.text{
   value="", 
-  expand="HORIZONTAL", 
+  expand="HORIZONTAL",
   tip="Put in a URL to a website to generate codes from. Could be wowhead, wowarmory, or a number of transmog sites."
 }
 
 bbox = iup.hbox{
-  textUrl,btn1; 
-  gap=4; 
+  textUrl,btn1;
+  gap=4;
   margin="4x4"
-} 
+}
 output = iup.text{
   multiline="YES",
   expand="YES",
@@ -195,11 +195,11 @@ output = iup.text{
   readonly="YES",
   wordwrap="YES",
   tip="The output of the generation",
-} 
+}
 
 optionTmog = iup.toggle{
-  title="Use transmogged items (armory only)", 
-  value="ON", 
+  title="Use transmogged items (armory only)",
+  value="ON",
   expand="HORIZONTAL",
   tip="If checked, it will use the character's transmogrified items on the armory.",
 }
@@ -211,7 +211,7 @@ optionBonus = iup.list{
 }
 optionsBox = iup.hbox{
   optionTmog; optionBonus;
-  gap=4; 
+  gap=4;
   margin="4x4"
 }
 
@@ -244,12 +244,12 @@ vbox = iup.vbox{
 }
 
 dlg = iup.dialog{
-  vbox; 
-  title="MorphGEN", 
+  vbox;
+  title="MorphGEN",
   size="350x230",
-  minsize="350x320", 
+  minsize="350x320",
   shrink="YES",
-  menu=menu, 
+  menu=menu,
   icon="resources/icon.ico"
 }
 dlg.defaultenter = btn1
@@ -263,7 +263,7 @@ dlg.defaultenter = btn1
 timer = iup.timer{time=100}
 function timer:action_cb()
   for k, v in pairs(_G.callbacks) do
-    _G.callbacks[k] = nil 
+    _G.callbacks[k] = nil
     _G[k](unpack(luar.slice2table(v)))
   end
   _G.callbacks = {}

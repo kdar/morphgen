@@ -25,6 +25,39 @@ var (
 	}
 )
 
+func apicall(u *neturl.URL) (*http.Response, error) {
+	apikeys := []string{
+		"sehm98r8ss3fddjfs8rwxur435xjav94",
+		"trtrn4tdhzeruuypctm55a8m5td9z4ce",
+		"cc7qrdaxn9h47ds39nmgzb9hnutxfsrr",
+		"cbygdtw624xmfn2hr2sw3ayaeekg9cvy",
+		"7zsnd2q7npg5bch8hacae7t28xskn8vr",
+	}
+
+	// if val, ok := options["apikey"]; ok {
+	// 	apikeys = append([]string{to.String(val)}, apikeys...)
+	// }
+
+	rawQuery := u.RawQuery
+	if len(rawQuery) > 0 {
+		rawQuery += "&apikey="
+	} else {
+		rawQuery += "apikey="
+	}
+
+	var resp *http.Response
+	var apierr error
+	for _, apikey := range apikeys {
+		u.RawQuery = rawQuery + apikey
+		resp, apierr = http.Get(u.String())
+		if apierr == nil {
+			return resp, nil
+		}
+	}
+
+	return nil, merry.Wrap(apierr)
+}
+
 // Get detailed codes from a character's armory page.
 func wowarmory(options map[string]interface{}) (TMorphItems, error) {
 	u, err := neturl.Parse(to.String(options["url"]))
@@ -45,6 +78,9 @@ func wowarmory(options map[string]interface{}) (TMorphItems, error) {
 		return nil, errors.New("Could not parse battle.net URL")
 	}
 
+	// FIXME: this isn't exactly correct, because you can be in the US and want
+	// to get the tmorph codes of a person in EU/China. So we need to probably
+	// have settings to where the user of TMorphGen is.
 	hostParts := strings.Split(u.Host, ".")
 	if hostParts[0] == "cn" {
 	} else if len(hostParts) == 2 {
@@ -53,33 +89,12 @@ func wowarmory(options map[string]interface{}) (TMorphItems, error) {
 		u.Host = hostParts[0] + ".api." + strings.Join(hostParts[1:], ".")
 	}
 
-	apikeys := []string{
-		"sehm98r8ss3fddjfs8rwxur435xjav94",
-		"trtrn4tdhzeruuypctm55a8m5td9z4ce",
-		"cc7qrdaxn9h47ds39nmgzb9hnutxfsrr",
-		"cbygdtw624xmfn2hr2sw3ayaeekg9cvy",
-		"7zsnd2q7npg5bch8hacae7t28xskn8vr",
-	}
-
-	if val, ok := options["apikey"]; ok {
-		apikeys = append([]string{to.String(val)}, apikeys...)
-	}
-
 	u.Scheme = "https"
 	u.Path = fmt.Sprintf("/wow/character/%s/%s", parts[loc], parts[loc+1])
-	rawQuery := "fields=items,appearance&locale=en_US&apikey="
+	u.RawQuery = "fields=items,appearance&locale=en_US"
 
-	var resp *http.Response
-	var apierr error
-	for _, apikey := range apikeys {
-		u.RawQuery = rawQuery + apikey
-		resp, apierr = http.Get(u.String())
-		if apierr == nil {
-			break
-		}
-	}
-
-	if apierr != nil {
+	resp, err := apicall(u)
+	if err != nil {
 		return nil, merry.Wrap(err)
 	}
 
@@ -180,7 +195,14 @@ func wowapi(ids []string) (TMorphItems, error) {
 			contextUrl := ""
 
 		REDO:
-			resp, err := http.Get("http://us.battle.net/api/wow/item/" + id + contextUrl)
+			// FIXME: using US api, ignoring user's location
+			u, err := neturl.Parse("https://us.api.battle.net/wow/item/" + id + contextUrl)
+			if err != nil {
+				errChan <- err
+				return
+			}
+
+			resp, err := apicall(u)
 			if err != nil {
 				errChan <- err
 				return
