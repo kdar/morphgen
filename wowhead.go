@@ -55,7 +55,7 @@ func wowhead(options map[string]interface{}) (TMorphItems, error) {
 				return items, nil
 			}
 		} else if count > 1 {
-			itemids := strings.Split(matches[1], ":")
+			itemids := strings.Split(matches[1][1:len(matches[1])-1], ":")
 			items, err := wowapi(itemids)
 			if err != nil {
 				return nil, errors.New(merry.Details(err))

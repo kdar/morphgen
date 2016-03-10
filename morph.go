@@ -5,9 +5,10 @@ import (
 	"errors"
 	"flag"
 	"fmt"
-	"github.com/gosexy/to"
 	"io"
 	"os"
+
+	"github.com/gosexy/to"
 	// "path/filepath"
 	"sort"
 	"strings"
@@ -25,6 +26,7 @@ var (
 	// what we're able to tmorph into
 	nameSlotMap = map[string]int{
 		"head":     1,
+		"neck":     2,
 		"shoulder": 3,
 		"shirt":    4,
 		"chest":    5,
@@ -33,14 +35,22 @@ var (
 		"feet":     8,
 		"wrist":    9,
 		"hands":    10,
+		"finger":   11,
+		"trinket":  12,
+		"one-hand": 13,
+		"shield":   14,
 		"back":     15,
 		"mainHand": 16,
 		"offHand":  17,
+		"bag":      18,
 		"tabard":   19,
+		"robe":     20,
 	}
 
 	// mappings of items type ids to wow slot ids
 	slotMap = map[int]int{
+		20: 5, // robe -> chest,
+
 		// main hand slot
 		13: 16, // one hand
 		15: 16, // ranged
